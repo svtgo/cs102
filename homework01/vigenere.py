@@ -9,9 +9,12 @@ def encrypt_vigenere(plaintext: str, keyword: str) -> str:
     >>> encrypt_vigenere("ATTACKATDAWN", "LEMON")
     'LXFOPVEFRNHR'
     """
-    ciphertext = ""
-    # PUT YOUR CODE HERE
-    return ciphertext
+    ciphertext = []
+    for i in range(len(plaintext)): 
+        x=(ord(plaintext[i])+ord(keyword[i]))%26
+        x+=ord('A') 
+        ciphertext.append(chr(x))
+    return("".join(ciphertext))
 
 
 def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
@@ -25,6 +28,9 @@ def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
     >>> decrypt_vigenere("LXFOPVEFRNHR", "LEMON")
     'ATTACKATDAWN'
     """
-    plaintext = ""
-    # PUT YOUR CODE HERE
-    return plaintext
+    plaintext = []
+    for i in range(len(ciphertext)): 
+        x=(ord(ciphertext[i])-ord(keyword[i])+26)%26
+        x+= ord('A') 
+        plaintext.append(chr(x)) 
+    return("".join(plaintext))
