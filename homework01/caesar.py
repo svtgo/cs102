@@ -15,7 +15,19 @@ def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
     ''
     """
     ciphertext = ""
-    # PUT YOUR CODE HERE
+    for i in plaintext:
+       if ord(i)>=ord('a') and ord(i)<=ord('z'):
+         if ord(i)+shift>ord('z'):
+           ciphertext=ciphertext+chr(ord(i)+shift-26)
+         else:
+           ciphertext=ciphertext+chr(ord(i)+shift)
+       elif ord(i)>=ord('A') and ord(i)<=ord('Z'):
+          if ord(i)+shift>ord('Z'):
+           ciphertext=ciphertext+chr((ord(i)+shift)-26)
+          else:
+           ciphertext=ciphertext+chr(ord(i)+shift)
+       else:
+         ciphertext=ciphertext+i
     return ciphertext
 
 
@@ -33,7 +45,19 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
     ''
     """
     plaintext = ""
-    # PUT YOUR CODE HERE
+    for i in ciphertext:
+       if ord(i)>=ord('a') and ord(i)<=ord('z'):
+         if ord(i)-shift<ord('z'):
+           plaintext=ciphertext+chr((ord(i)-shift)+26)
+         else:
+           plaintext=ciphertext+chr(ord(i)-shift)
+       elif ord(i)>=ord('A') and ord(i)<=ord('Z'):
+         if ord(i)-shift<ord('Z'):
+           plaintext=ciphertext+chr((ord(i)-shift)+26)
+         else:
+           plaintext=ciphertext+chr(ord(i)-shift)
+       else:
+         plaintext=ciphertext+i
     return plaintext
 
 
@@ -42,5 +66,7 @@ def caesar_breaker_brute_force(ciphertext: str, dictionary: tp.Set[str]) -> int:
     Brute force breaking a Caesar cipher.
     """
     best_shift = 0
-    # PUT YOUR CODE HERE
+    for i in range(26):
+      if decrypt_caesar(ciphertext, i) in dictionary:
+        best_shift=i
     return best_shift
