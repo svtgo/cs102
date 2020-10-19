@@ -16,18 +16,18 @@ def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
     """
     ciphertext = ""
     for i in plaintext:
-       if ord(i)>=ord('a') and ord(i)<=ord('z'):
-         if ord(i)+shift>ord('z'):
-           ciphertext=ciphertext+chr(ord(i)+shift-26)
+       if (ord('a') <= ord(i) <= ord('z')):
+         if ord(i) + shift > ord('z'):
+           ciphertext += chr(ord(i)+shift-26)
          else:
-           ciphertext=ciphertext+chr(ord(i)+shift)
-       elif ord(i)>=ord('A') and ord(i)<=ord('Z'):
-          if ord(i)+shift>ord('Z'):
-           ciphertext=ciphertext+chr((ord(i)+shift)-26)
-          else:
-           ciphertext=ciphertext+chr(ord(i)+shift)
+           ciphertext += chr(ord(i)+shift)
+       elif (ord('A') <= ord(i) <= ord('Z')):
+         if ord(i) + shift > ord('Z'):
+           ciphertext += chr(ord(i)+shift-26)
+         else:
+           ciphertext += chr(ord(i)+shift)
        else:
-         ciphertext=ciphertext+i
+         ciphertext += i
     return ciphertext
 
 
@@ -46,20 +46,21 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
     """
     plaintext = ""
     for i in ciphertext:
-       if ord(i)>=ord('a') and ord(i)<=ord('z'):
-         if ord(i)-shift<ord('z'):
-           plaintext=ciphertext+chr((ord(i)-shift)+26)
-         else:
-           plaintext=ciphertext+chr(ord(i)-shift)
-       elif ord(i)>=ord('A') and ord(i)<=ord('Z'):
-         if ord(i)-shift<ord('Z'):
-           plaintext=ciphertext+chr((ord(i)-shift)+26)
-         else:
-           plaintext=ciphertext+chr(ord(i)-shift)
+       if (ord('a') <= ord(i) <= ord('z')):
+         if ord(i) - shift < ord('a'):
+           plaintext += chr(ord(i)-shift+26)
+         else:  
+          plaintext += chr(ord(i)-shift)
+       elif (ord('A') <= ord(i) <= ord('Z')):
+         if ord(i) - shift < ord('A'):
+           plaintext += chr(ord(i)-shift+26)
+         else:  
+            plaintext += chr(ord(i)-shift)
        else:
-         plaintext=ciphertext+i
+          plaintext += i
     return plaintext
 
+print(decrypt_caesar("sbKRQ"))
 
 def caesar_breaker_brute_force(ciphertext: str, dictionary: tp.Set[str]) -> int:
     """
