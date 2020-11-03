@@ -16,7 +16,8 @@ def display(grid: List[List[str]]) -> None:
     for row in range(9):
         print(
             "".join(
-                grid[row][col].center(width) + ("|" if str(col) in "25" else "") for col in range(9)
+                grid[row][col].center(width) + ("|" if str(col) in "25" else "")
+                for col in range(9)
             )
         )
         if str(row) in "25":
@@ -88,7 +89,7 @@ def find_empty_positions(grid: List[List[str]]) -> Optional[Tuple[int, int]]:
     for row in range(len(grid)):
         for col in range(len(grid[row])):
             if grid[row][col] == ".":
-                return (row, col)
+                return row, col
     return None
 
 
@@ -134,7 +135,7 @@ def solve(grid: List[List[str]]) -> Optional[List[List[str]]]:
         else:
             grid[row][col] = "."
 
-    return []
+    return None
 
 
 def check_solution(solution: List[List[str]]) -> bool:
