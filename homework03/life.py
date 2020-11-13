@@ -1,5 +1,6 @@
 import pathlib
 import random
+import copy
 import typing as tp
 
 import pygame
@@ -29,41 +30,44 @@ class GameOfLife:
         self.generations = 1
 
     def create_grid(self, randomize: bool = False) -> Grid:
+        # Copy from previous assignment
         grid = []
-        for i in range(self.rows):
-            grid.append([0] * self.cols)
+        for i in range(self.cell_height):
+            grid.append([0] * self.cell_width)
         if randomize:
-            for i in range(self.rows):
-                for j in range(self.cols):
+            for i in range(self.cell_height):
+                for j in range(self.cell_width):
                     grid[i][j] = random.randint(0, 1)
         return grid
         pass
 
     def get_neighbours(self, cell: Cell) -> Cells:
+        # Copy from previous assignment
         n = []
         for i in range(cell[0] - 1, cell[0] + 2):
             for j in range(cell[1] - 1, cell[1] + 2):
                 if (
                     (i >= 0)
-                    and (i <= self.rows - 1)
+                    and (i <= self.cell_height - 1)
                     and (j >= 0)
-                    and (j <= self.cols - 1)
+                    and (j <= self.cell_width - 1)
                     and not (i == cell[0] and j == cell[1])
                 ):
-                    n.append(self.curr_generation[i][j])
+                    n.append(self.grid[i][j])
         return n
         pass
 
     def get_next_generation(self) -> Grid:
-        new_grid = copy.deepcopy(self.curr_generation)
-        for i in range(self.rows):
-            for j in range(self.cols):
+        # Copy from previous assignment
+        new_grid = copy.deepcopy(self.grid)
+        for i in range(self.cell_height):
+            for j in range(self.cell_width):
                 pos = (i, j)
                 neigh = 0
                 for k in range(len(self.get_neighbours(pos))):
                     if self.get_neighbours(pos)[k] == 1:
                         neigh += 1
-                if self.curr_generation[i][j] == 1:
+                if self.grid[i][j] == 1:
                     if neigh != 2 and neigh != 3:
                         new_grid[i][j] = 0
                 else:
@@ -76,9 +80,11 @@ class GameOfLife:
         """
         Выполнить один шаг игры.
         """
-        self.prev_generation = copy.deepcopy(self.curr_generation)
-        self.curr_generation = self.get_next_generation()
         self.generations += 1
+        self.prev_generation, self.curr_generation = (
+            self.curr_generation,
+            self.get_next_generation(),
+        )
         pass
 
     @property
@@ -86,10 +92,7 @@ class GameOfLife:
         """
         Не превысило ли текущее число поколений максимально допустимое.
         """
-        if self.max_generations > self.generations:
-            return True
-        else:
-            return False
+        return self.generations >= self.max_generations
         pass
 
     @property
@@ -97,10 +100,7 @@ class GameOfLife:
         """
         Изменилось ли состояние клеток с предыдущего шага.
         """
-        if self.curr_generation != self.prev_generation:
-            return True
-        else:
-            return False
+        return not self.curr_generation == self.prev_generation
         pass
 
     @staticmethod
@@ -108,16 +108,20 @@ class GameOfLife:
         """
         Прочитать состояние клеток из указанного файла.
         """
-        i = 0
+        height = 0
         grid = []
-        with open(filename) as f:
-            for line in f:
-                grid.append([int(x) for x in line if x in "01"])
-                i += 1
-        j = len(grid[0])
-        game = GameOfLife((i, j))
-        game.curr_generation = grid
-        return game
+        f = open(filename)
+        for line in f:
+            row = [int(i) for i in line if i != "\n"]
+            grid.append(row)
+            height += 1
+        width = len(row)
+        start_from_file = GameOfLife((height, width), False)
+        start_from_file.prev_generation = GameOfLife.create_grid(start_from_file)
+        start_from_file.curr_generation = grid
+        f.close()
+
+        return start_from_file
         pass
 
     def save(self, filename: pathlib.Path) -> None:
