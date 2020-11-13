@@ -6,8 +6,7 @@ from ui import UI
 
 
 class GUI(UI):
-
-    def __init__(self, life: GameOfLife, cell_size: int=10, speed: int=10) -> None:
+    def __init__(self, life: GameOfLife, cell_size: int = 10, speed: int = 10) -> None:
         super().__init__(life)
         self.cell_size = cell_size
         self.width = self.cell_size * self.life.cols
@@ -17,30 +16,37 @@ class GUI(UI):
 
     def draw_lines(self) -> None:
         for x in range(0, self.width, self.cell_size):
-            pygame.draw.line(self.screen, pygame.Color('black'),
-                    (x, 0), (x, self.height))
+            pygame.draw.line(self.screen, pygame.Color("black"), (x, 0), (x, self.height))
         for y in range(0, self.height, self.cell_size):
-            pygame.draw.line(self.screen, pygame.Color('black'),
-                    (0, y), (self.width, y))
+            pygame.draw.line(self.screen, pygame.Color("black"), (0, y), (self.width, y))
 
     def draw_grid(self) -> None:
         for j in range(self.life.rows):
             for i in range(self.life.cols):
                 if self.life.curr_generation[j][i] == 1:
-                    c = pygame.Color('green')                
+                    c = pygame.Color("green")
                 else:
-                    c = pygame.Color('white')
-                pygame.draw.rect(self.screen, c, (i * self.cell_size + 1, j * self.cell_size + 1, self.cell_size - 1, self.cell_size - 1))
+                    c = pygame.Color("white")
+                pygame.draw.rect(
+                    self.screen,
+                    c,
+                    (
+                        i * self.cell_size + 1,
+                        j * self.cell_size + 1,
+                        self.cell_size - 1,
+                        self.cell_size - 1,
+                    ),
+                )
 
     def run(self) -> None:
         pygame.init()
         clock = pygame.time.Clock()
-        pygame.display.set_caption('Game of Life')
-        self.screen.fill(pygame.Color('white'))
+        pygame.display.set_caption("Game of Life")
+        self.screen.fill(pygame.Color("white"))
         self.life.curr_generation = self.life.create_grid(True)
         pause = True
         running = True
-        while running:          
+        while running:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     running = False

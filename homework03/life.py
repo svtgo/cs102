@@ -31,7 +31,7 @@ class GameOfLife:
     def create_grid(self, randomize: bool = False) -> Grid:
         grid = []
         for i in range(self.rows):
-            grid.append([0]*self.cols)
+            grid.append([0] * self.cols)
         if randomize:
             for i in range(self.rows):
                 for j in range(self.cols):
@@ -43,7 +43,13 @@ class GameOfLife:
         n = []
         for i in range(cell[0] - 1, cell[0] + 2):
             for j in range(cell[1] - 1, cell[1] + 2):
-                if (i >= 0) and (i <= self.rows - 1) and (j >= 0) and (j <= self.cols - 1) and not (i == cell[0] and j == cell[1]):
+                if (
+                    (i >= 0)
+                    and (i <= self.rows - 1)
+                    and (j >= 0)
+                    and (j <= self.cols - 1)
+                    and not (i == cell[0] and j == cell[1])
+                ):
                     n.append(self.curr_generation[i][j])
         return n
         pass
@@ -106,7 +112,7 @@ class GameOfLife:
         grid = []
         with open(filename) as f:
             for line in f:
-                grid.append([int(x) for x in line if x in '01'])
+                grid.append([int(x) for x in line if x in "01"])
                 i += 1
         j = len(grid[0])
         game = GameOfLife((i, j))
@@ -122,6 +128,6 @@ class GameOfLife:
         for i in range(self.rows):
             for j in range(self.cols):
                 f.write(str(self.curr_generation[i][j]))
-            f.write('\n')
+            f.write("\n")
         f.close()
         pass
