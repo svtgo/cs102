@@ -6,7 +6,6 @@ import pygame
 from pygame.locals import *
 
 
-
 Cell = Tuple[int, int]
 Cells = List[int]
 Grid = List[Cells]
