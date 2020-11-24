@@ -11,42 +11,35 @@ class Console(UI):
 
     def draw_borders(self, screen) -> None:
         """ Отобразить рамку. """
-        top_border = "+%s+" % (self.life.cols * "-")
+        screen.addch(0, 0, "+")
+        screen.addch(self.life.rows + 1, self.life.cols + 1, "+")
+        screen.addch(0, self.life.cols + 1, "+")
+        screen.addch(self.life.rows + 1, 0, "+")
 
-        screen.addstr(0, 0, top_border)
+        for y in range(self.life.rows):
+            screen.addch(y + 1, 0, "|")
+            screen.addch(y + 1, self.life.cols + 1, "|")
 
-        for i in range(1, self.life.rows + 1):
-            screen.addstr(i, 0, "|")
-            screen.addstr(i, self.life.cols + 1, "|")
-
-        screen.addstr(self.life.rows + 1, 0, top_border)
+        for x in range(self.life.cols):
+            screen.addch(0, x + 1, "-")
+            screen.addch(self.life.rows + 1, x + 1, "-")
 
     def draw_grid(self, screen) -> None:
         """ Отобразить состояние клеток. """
-
-        grid = self.life.curr_generation
-
-        for row in range(self.life.rows):
-            for col in range(self.life.cols):
-                screen.addstr(row + 1, col + 1, "*" if grid[row][col] else " ")
+        for y in range(self.life.rows):
+            for x in range(self.life.cols):
+                if self.life.curr_generation[y][x] == 0:
+                    screen.addch(y + 1, x + 1, " ")
+                else:
+                    screen.addch(y + 1, x + 1, "*")
 
     def run(self) -> None:
         screen = curses.initscr()
-
-        running = True
-        while (self.life.is_changing and not self.life.is_max_generations_exceeded) and running:
-            try:
-                screen.clear()
-
-                self.draw_borders(screen)
-                self.draw_grid(screen)
-
-                self.life.step()
-
-                screen.refresh()
-                time.sleep(0.5)
-
-            except KeyboardInterrupt:
-                running = False
-
+        self.draw_borders(screen)
+        screen.refresh()
+        while self.life.is_max_generations_exceeded and self.life.is_changing:
+            self.draw_grid(screen)
+            screen.refresh()
+            self.life.step()
+            time.sleep(0.01)
         curses.endwin()

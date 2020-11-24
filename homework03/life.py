@@ -1,10 +1,8 @@
-import random
-import pygame
-import typing
-import copy
 import pathlib
-from pygame.locals import *
-from typing import List, Tuple, Optional
+import random
+import copy
+
+from typing import List, Optional, Tuple
 
 Cell = Tuple[int, int]
 Cells = List[int]
@@ -54,14 +52,16 @@ class GameOfLife:
         """
         neighbours = []
 
-        for i in range(-1, 2):
-            for j in range(-1, 2):
-                h = cell[0] + i
-                w = cell[1] + j
-
-                if 0 <= w < self.cols and 0 <= h < self.rows and (i, j) != (0, 0):
-                    neighbours.append(self.curr_generation[h][w])
-
+        for i in range(cell[0] - 1, cell[0] + 2):
+            for j in range(cell[1] - 1, cell[1] + 2):
+                if (
+                    (i >= 0)
+                    and (i <= self.rows - 1)
+                    and (j >= 0)
+                    and (j <= self.cols - 1)
+                    and not (i == cell[0] and j == cell[1])
+                ):
+                    n.append(self.curr_generation[i][j])
         return neighbours
 
     def get_next_generation(self) -> Grid:
