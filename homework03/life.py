@@ -61,7 +61,7 @@ class GameOfLife:
                     and (j <= self.cols - 1)
                     and not (i == cell[0] and j == cell[1])
                 ):
-                    n.append(self.curr_generation[i][j])
+                    neighbours.append(self.curr_generation[i][j])
         return neighbours
 
     def get_next_generation(self) -> Grid:
