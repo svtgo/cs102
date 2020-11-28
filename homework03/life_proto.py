@@ -1,14 +1,13 @@
 import random
-import copy
-from typing import List, Tuple
+import typing as tp
+from copy import deepcopy
 
 import pygame
 from pygame.locals import *
 
-
-Cell = Tuple[int, int]
-Cells = List[int]
-Grid = List[Cells]
+Cell = tp.Tuple[int, int]
+Cells = tp.List[int]
+Grid = tp.List[Cells]
 
 
 class GameOfLife:
@@ -46,20 +45,19 @@ class GameOfLife:
         self.screen.fill(pygame.Color("white"))
 
         # Создание списка клеток
-        self.grid = self.create_grid(True)
+        self.create_grid(randomize=True)
 
         running = True
         while running:
             for event in pygame.event.get():
-                if event.type == QUIT:
+                if event.type == pygame.QUIT:
                     running = False
             self.draw_lines()
 
             # Отрисовка списка клеток
             # Выполнение одного шага игры (обновление состояния ячеек)
-            # PUT YOUR CODE HERE
-            self.grid = self.get_next_generation()
             self.draw_grid()
+            self.get_next_generation()
 
             pygame.display.flip()
             clock.tick(self.speed)
@@ -80,35 +78,27 @@ class GameOfLife:
         out : Grid
             Матрица клеток размером `cell_height` х `cell_width`.
         """
-        grid = []
-        for i in range(self.cell_height):
-            grid.append([0] * self.cell_width)
+        self.grid = [[0 for i in range(self.cell_width)] for j in range(self.cell_height)]
         if randomize:
             for i in range(self.cell_height):
                 for j in range(self.cell_width):
-                    grid[i][j] = random.randint(0, 1)
-        return grid
+                    self.grid[i][j] = random.randint(0, 1)
+        return self.grid
 
     def draw_grid(self) -> None:
         """
         Отрисовка списка клеток с закрашиванием их в соответствующе цвета.
         """
-        for j in range(self.cell_height):
-            for i in range(self.cell_width):
-                if self.grid[j][i] == 1:
-                    c = pygame.Color("green")
+        for i in range(self.cell_height):
+            for j in range(self.cell_width):
+                x = j * self.cell_size + 1
+                y = i * self.cell_size + 1
+                a = self.cell_size - 1
+                b = self.cell_size - 1
+                if self.grid[i][j]:
+                    pygame.draw.rect(self.screen, pygame.Color("green"), (x, y, a, b))
                 else:
-                    c = pygame.Color("white")
-                pygame.draw.rect(
-                    self.screen,
-                    c,
-                    (
-                        i * self.cell_size + 1,
-                        j * self.cell_size + 1,
-                        self.cell_size - 1,
-                        self.cell_size - 1,
-                    ),
-                )
+                    pygame.draw.rect(self.screen, pygame.Color("white"), (x, y, a, b))
 
     def get_neighbours(self, cell: Cell) -> Cells:
         """
@@ -125,21 +115,16 @@ class GameOfLife:
         out : Cells
             Список соседних клеток.
         """
-
-        n = []
-
-        for i in range(cell[0] - 1, cell[0] + 2):
-            for j in range(cell[1] - 1, cell[1] + 2):
-                if (
-                    (i >= 0)
-                    and (i <= self.cell_height - 1)
-                    and (j >= 0)
-                    and (j <= self.cell_width - 1)
-                    and not (i == cell[0] and j == cell[1])
-                ):
-                    n.append(self.grid[i][j])
-
-        return n
+        neighbours = []
+        r, w = cell
+        a = self.cell_height - 1
+        b = self.cell_width - 1
+        for i in range(r - 1, r + 2):
+            for j in range(w - 1, w + 2):
+                if not (0 <= i <= a and 0 <= j <= b) or (i == r and j == w):
+                    continue
+                neighbours.append(self.grid[i][j])
+        return neighbours
 
     def get_next_generation(self) -> Grid:
         """
@@ -149,18 +134,15 @@ class GameOfLife:
         out : Grid
             Новое поколение клеток.
         """
-        new_grid = copy.deepcopy(self.grid)
+        new_clist = deepcopy(self.grid)
         for i in range(self.cell_height):
             for j in range(self.cell_width):
-                pos = (i, j)
-                neigh = 0
-                for k in range(len(self.get_neighbours(pos))):
-                    if self.get_neighbours(pos)[k] == 1:
-                        neigh += 1
-                if self.grid[i][j] == 1:
-                    if neigh != 2 and neigh != 3:
-                        new_grid[i][j] = 0
+                k = sum(self.get_neighbours((i, j)))
+                if self.grid[i][j]:
+                    if k < 2 or k > 3:
+                        new_clist[i][j] = 0
                 else:
-                    if neigh == 3:
-                        new_grid[i][j] = 1
-        return new_grid
+                    if k == 3:
+                        new_clist[i][j] = 1
+        self.grid = new_clist
+        return self.grid
