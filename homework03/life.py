@@ -35,7 +35,7 @@ class GameOfLife:
         if randomize:
             for i in range(self.rows):
                 for j in range(self.cols):
-                    clist[i][j] = random.randint(0, 1)
+                    grid[i][j] = random.randint(0, 1)
         return grid
 
     def get_neighbours(self, cell: Cell) -> Cells:
