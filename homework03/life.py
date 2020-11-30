@@ -114,3 +114,8 @@ class GameOfLife:
                 f.write(str(col))
             f.write("\n")
         f.close()
+
+
+if __name__ == "__main__":
+    game = GameOfLife()
+    game.run()

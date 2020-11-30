@@ -146,3 +146,8 @@ class GameOfLife:
                         new_clist[i][j] = 1
         self.grid = new_clist
         return self.grid
+
+
+if __name__ == "__main__":
+    game = GameOfLife(320, 240, 20)
+    game.run()
