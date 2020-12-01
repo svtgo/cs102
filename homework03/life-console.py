@@ -55,10 +55,13 @@ class Console(UI):
 
     def run(self) -> None:
         screen = curses.initscr()
-        curses.wrapper(self.draw_borders)
-        while self.life.is_changing and not self.life.is_max_generations_exceeded:
+        screen.clear()
+        self.draw_borders(screen)
+        screen.refresh()
+        while not self.life.is_max_generations_exceeded and self.life.is_changing:
+            self.draw_grid(screen)
+            screen.refresh()
             self.life.step()
-            self.draw_borders(screen)
         curses.endwin()
 
 
