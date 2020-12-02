@@ -52,6 +52,11 @@ class Console(UI):
                         screen.addstr(n_row + dy, n_col + dx, "*")
                     except curses.error:
                         pass
+                else:
+                    try:
+                        screen.addstr(n_row + dx, n_col + dy, " ")
+                    except curses.error:
+                        pass
 
     def run(self) -> None:
         screen = curses.initscr()
