@@ -22,7 +22,7 @@ class Console(UI):
                         string += "+"
                     else:
                         string += "-"
-                elif row < (height - 1) and row > 0:
+                elif 0 < row < height - 1:
                     if col == 0 or col == (width - 1):
                         string += "|"
                     else:
@@ -54,7 +54,7 @@ class Console(UI):
                         pass
                 else:
                     try:
-                        screen.addstr(n_row + dx, n_col + dy, " ")
+                        screen.addstr(n_row + dy, n_col + dx, " ")
                     except curses.error:
                         pass
 
