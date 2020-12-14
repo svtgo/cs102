@@ -39,6 +39,8 @@ def commit_tree(
 ) -> str:
     seconds_time = str(int(time.mktime(time.localtime()))).encode()
     timezone = "{:+}00".format(int(time.timezone / -3600)).zfill(5).encode()
+    if author is None:
+        author = "{} <{}>".format(os.getenv("GIT_AUTHOR_NAME"), os.getenv("GIT_AUTHOR_EMAIL"))
     assert isinstance(author, str)
     if parent:
         assert isinstance(parent, str)
