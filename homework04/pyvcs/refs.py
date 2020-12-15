@@ -13,7 +13,7 @@ def update_ref(gitdir: pathlib.Path, ref: tp.Union[str, pathlib.Path], new_value
 
 def symbolic_ref(gitdir: pathlib.Path, name: str, ref: str) -> None:
     with (gitdir / "HEAD").open("w") as f:
-        f.write(name)
+        f.write("ref: " + ref + "\n")
 
 
 def ref_resolve(gitdir: pathlib.Path, refname: str) -> tp.Union[str, None]:
