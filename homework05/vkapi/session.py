@@ -22,6 +22,7 @@ class Session:
         max_retries: int = 3,
         backoff_factor: float = 0.3,
     ) -> None:
+        self.base_url = base_url
         retry = Retry(
             total=max_retries,
             status_forcelist=[500, 503],
