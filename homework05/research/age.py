@@ -14,15 +14,19 @@ def age_predict(user_id: int) -> tp.Optional[float]:
     :param user_id: Идентификатор пользователя.
     :return: Медианный возраст пользователя.
     """
-    friends = get_friends(user_id, fields=["bdate"]).items
     years = []
+    now = dt.date.today()
+    friends = get_friends(user_id, fields=["bdate"]).items
     for friend in friends:
         try:
             bdate = dt.datetime.strptime(friend["bdate"], "%d.%m.%Y")  # type: ignore
         except (KeyError, ValueError):
             continue
-        years.append(dt.datetime.now().year - bdate.year)
+        years.append(
+            now.year
+            - bdate.year
+            - (now.month < bdate.month or (now.month == bdate.month and now.day < bdate.day))
+        )
     if years:
-        predict = float(statistics.median(years))
-        return predict
+        return statistics.median(years)
     return None
