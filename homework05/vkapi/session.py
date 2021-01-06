@@ -4,6 +4,8 @@ import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
+from vkapi.config import VK_CONFIG
+
 
 class TimeoutHTTPAdapter(HTTPAdapter):
     def __init__(self, timeout, *args, **kwargs):
@@ -20,7 +22,7 @@ class TimeoutHTTPAdapter(HTTPAdapter):
         return super().send(request, **kwargs)
 
 
-class Session(requests.Session):
+class Session:
     """
     Сессия.
 
@@ -37,19 +39,25 @@ class Session(requests.Session):
         max_retries: int = 3,
         backoff_factor: float = 0.3,
     ) -> None:
-        super().__init__()
         self.base_url = base_url
         retry = Retry(
-            total=max_retries,
-            status_forcelist=[429, 500, 502, 503, 504],
-            backoff_factor=backoff_factor,
-            method_whitelist=["HEAD", "GET", "OPTIONS", "POST"],
+            total=max_retries, status_forcelist=[500, 503], backoff_factor=backoff_factor
         )
-        adapter = TimeoutHTTPAdapter(timeout=timeout, max_retries=retry)
-        self.mount(self.base_url, adapter)
+        self.session = requests.Session()
+        Adapter = HTTPAdapter(max_retries=retry)
+        self.session.mount(self.base_url, Adapter)
 
     def get(self, url: str, *args: tp.Any, **kwargs: tp.Any) -> requests.Response:
-        return super().get(self.base_url + "/" + url, *args, **kwargs)
+        return self.send("GET", self.base_url + url, *args, **kwargs)
 
     def post(self, url: str, *args: tp.Any, **kwargs: tp.Any) -> requests.Response:
-        return super().post(self.base_url + "/" + url, *args, **kwargs)
+        return self.send("POST", self.base_url + url, *args, **kwargs)
+
+    def send(self, method: str, url: str, *args: tp.Any, **kwargs: tp.Any) -> requests.Response:
+        if "params" not in kwargs:
+            kwargs["params"] = dict()
+        kwargs["params"]["access_token"] = VK_CONFIG["access_token"]
+        kwargs["params"]["v"] = VK_CONFIG["version"]
+        request = requests.Request(method, url, *args, **kwargs)
+        ready = request.prepare()
+        return self.session.send(ready)
