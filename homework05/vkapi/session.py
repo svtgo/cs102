@@ -40,9 +40,7 @@ class Session:
         backoff_factor: float = 0.3,
     ) -> None:
         self.base_url = base_url
-        retry = Retry(
-            total=max_retries, status_forcelist=[500, 503], backoff_factor=backoff_factor
-        )
+        retry = Retry(total=max_retries, status_forcelist=[500, 503], backoff_factor=backoff_factor)
         self.session = requests.Session()
         Adapter = HTTPAdapter(max_retries=retry)
         self.session.mount(self.base_url, Adapter)
