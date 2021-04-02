@@ -48,7 +48,8 @@ def classify_news():
     test = s.query(News).filter(News.label == None).all()
     cell = list(map(lambda x: model.predict(x.title), test))
     return template(
-        "recommended_template", rows=list(map(lambda x: (x[1], colors[cell[x[0]]]), enumerate(test)))
+        "recommended_template",
+        rows=list(map(lambda x: (x[1], colors[cell[x[0]]]), enumerate(test))),
     )
 
 
