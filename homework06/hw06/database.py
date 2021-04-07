@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
-from scraputils import get_news
+from hw06.scraputils import get_news
 import typing as tp
 
 Base = declarative_base()
