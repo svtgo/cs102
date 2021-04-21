@@ -3,7 +3,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfVectorizer
 import string
 import csv
-from bayes import *
+from bayes import NaiveBayesClassifier
 
 
 def clean(s):
