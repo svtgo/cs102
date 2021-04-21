@@ -1,18 +1,38 @@
-from bayes import NaiveBayesClassifier
-from database import News, local_session
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.pipeline import Pipeline
+from sklearn.feature_extraction.text import TfidfVectorizer
+import string
+import csv
+from bayes import *
 
-X, y = [], []
 
-model = NaiveBayesClassifier(alpha=0.05)
-s = local_session()
-rows = s.query(News).filter(News.label != None).all()
-for row in rows:
-    X.append(f"{row.title} {row.author} {row.url}")
-    y.append(row.label)
+def clean(s):
+    translator = str.maketrans("", "", string.punctuation)
+    return s.translate(translator)
 
-limit = len(rows) // 100 * 70
-X_train, y_train, X_test, y_test = X[:limit], y[:limit], X[limit:], y[limit:]
 
-model.fit(X, y)
+if __name__ == "__main__":
+    model = Pipeline([
+        ('vectorizer', TfidfVectorizer()),
+        ('classifier', MultinomialNB(alpha=0.05)),
+    ])
 
-print(model.score(X_test, y_test))
+    with open("data/SMSSpamCollection") as f:
+        data = list(csv.reader(f, delimiter="\t"))
+
+    X, y = [], []
+
+    for target, msg in data:
+        X.append(msg)
+        y.append(target)
+
+    X = [clean(x).lower() for x in X]
+
+    X_train, y_train, X_test, y_test = X[:3900], y[:3900], X[3900:], y[3900:]
+
+    model.fit(X_train, y_train)
+    print(model.score(X_test, y_test))
+
+    model = NaiveBayesClassifier()
+    model.fit(X_train, y_train)
+    print(model.score(X_test, y_test))

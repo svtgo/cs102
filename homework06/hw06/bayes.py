@@ -56,7 +56,7 @@ if __name__ == "__main__":
     import csv
     import string
 
-    with open("SMSSpamCollection") as f:
+    with open("data/SMSSpamCollection") as f:
         data = list(csv.reader(f, delimiter="\t"))
     print(len(data))
 
