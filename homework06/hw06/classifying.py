@@ -12,10 +12,12 @@ def clean(s):
 
 
 if __name__ == "__main__":
-    model = Pipeline([
-        ('vectorizer', TfidfVectorizer()),
-        ('classifier', MultinomialNB(alpha=0.05)),
-    ])
+    model = Pipeline(
+        [
+            ("vectorizer", TfidfVectorizer()),
+            ("classifier", MultinomialNB(alpha=0.05)),
+        ]
+    )
 
     with open("data/SMSSpamCollection") as f:
         data = list(csv.reader(f, delimiter="\t"))
